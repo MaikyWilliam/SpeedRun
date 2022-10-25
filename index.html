@@ -5,6 +5,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mario Jump</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bungee+Spice&family=Nabla&family=Oxanium:wght@200;300;400;500;600&family=Tourney:wght@300&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="css/style.css">
     <script src="js/script.js" defer> </script>
     
@@ -13,24 +18,37 @@
 
     <div class="game-board">
         
-
         <div class="pontuacao">
-            <h1 id="pontos">:</h1>
+            <h1 id="pontos">Pontos:</h1>
+            <h1>Recorde: <span id="recorde"></span></h1>
         </div>
-        
         <img src="imagens/clouds.png" class="clouds">
-        <img src="imagens/pipe.png" class="pipe">
-        <img src="imagens/mario.gif" class="mario">
-        <!-- <img src="imagens/ebba-run_s peed-brawl.webp" class="mario"> -->
-        <!-- <img src="imagens/teste.png" class="mario"> -->
         
-       
-      
+        <span class="inicio">3</span> 
+
+        <div class="start">
+            <h2>Mario Jump</h2>
+            <div class="start-btn">
+                <button id="go">Iniciar</button>
+                <button id="rec">Recordes</button>
+            </div>
+        </div> 
+        
+        <img src="imagens/pipe.png" class="pipe aguarda">
+        <img src="imagens/mario.gif" class="mario">        
+        
         <div class="game-over">
             <h1>Game Over</h1>
-            <button>Continuar</button>
+            <form>
+                <input type="text" name="nome" id="nome" placeholder="Digite seu Nome..." required>
+                <button type="submit" >Continuar</button>
+            </form>
         </div>
 
+        <div class="recordes"></div>
+        <div class="div-voltar">
+            <button id="voltar">Voltar</button>
+        </div>
 
     </div>
     
