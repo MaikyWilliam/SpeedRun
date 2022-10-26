@@ -178,7 +178,7 @@ btn.addEventListener("click", function (e) {
     salvar(nome);
     recordeSalvo = [];
     // Recarregar a pagina quando concluir
-    // location.reload();
+    location.reload();
 });
 
 // Botão de iniciar o jogo
