@@ -22,45 +22,72 @@ var ordena;
 var ordenaP;
 var ordenaRecorde;
 
-if (recordeSalvo) {
+if (isNaN(recordeSalvo) && recordeSalvo.length > 0) {
     recordeSalvo = JSON.parse(recordeSalvo)
-    ordena = ordenaRank();
-    recorde.innerText = ordena;
+    recordeSalvo = ordenaRank();
+    recorde.innerText = recordeSalvo[0].pontos;
 }
 
+// Função para ordenar o localStorage de acordo com as Maiores pontuações
 function ordenaRank() {
-    for (const i in recordeSalvo) {
-        ordena = recordeSalvo[i].pontos
-        for (const j in recordeSalvo) {
-            ordenaP = recordeSalvo[j].pontos;
-            if (ordena > ordenaP) {
-                ordenaRecorde = recordeSalvo[i]
-            }
+    // exemplo de ordenação de array
+    if(recordeSalvo){
+        recordeSalvo.sort(function(a,b) {
+            if(a.pontos > b.pontos) return -1;
+            if(a.pontos < b.pontos) return 1;
+            return 0;
+        });
+
+        if(recordeSalvo.length > 3){
+            let recordeSalvo = localStorage.getItem('recorde')
+            recordeSalvo = JSON.parse(recordeSalvo);
+            recordeSalvo.pop()
+            localStorage.setItem("recorde", JSON.stringify(recordeSalvo))
         }
+
+        return recordeSalvo
     }
-    return ordena
 }
 
+// Mecanica principal do jogo 
+function loop() {
+    // rank();
+    aguardaIncio();
+    scoreFinal();
+    setInterval(() => {
+        const pipePosition = pipe.offsetLeft;
+        const marioPosition = window.getComputedStyle(mario).bottom.replace('px', '');
+
+        if (pipePosition <= 120 && pipePosition > 0 && marioPosition < 80) {
+            pipe.style.animation = 'none';
+            pipe.style.left = `${pipePosition}px`;
+
+            mario.style.animation = 'none';
+            mario.style.bottom = `${marioPosition}px`;
+
+            mario.src = './imagens/game-over.png';
+            mario.style.width = '75px'
+            mario.style.marginLeft = '50px'
+
+            over.style.display = 'block'
+            gameover = true;
+            return
+        }
+    }, 10)
+}
+
+// Contagem de 3 segundos antes de iniciar o game
 function aguardaIncio() {
     setInterval(() => {
         aguarda.classList.remove("aguarda");
     }, 3000);
 }
 
-btn.addEventListener("click", function (e) {
-    e.preventDefault();
-    var nome = document.getElementById('nome');
-    nome = nome.value
-    salvar(nome);
-    location.reload();
-});
-
-const jump = () => {
-    mario.classList.add('jump')
-
-    setTimeout(() => {
-        mario.classList.remove('jump')
-    }, 500);
+function rank() {
+    // setInterval(()=>{
+        recordeSalvo = ordenaRank();
+        localStorage.setItem('recorde', JSON.stringify(recordeSalvo)) 
+    // },1000); 
 }
 
 async function salvar(nome) {
@@ -71,24 +98,32 @@ async function salvar(nome) {
         nomeRecorde = nome.value
         recorde = recorde.innerText = score - 1;
 
-        ordena = ordenaRank();
+        recordeSalvo = ordenaRank();
 
         if (recordeSalvo) {
+            let isMaior = false;
+            for (let i = 0; i < recordeSalvo.length; i++) {
+                if(recorde > recordeSalvo[i].pontos){
+                    isMaior = true;
+                }
+            }
 
-            if (recorde > ordena) {
+            console.log(recordeSalvo.length)
+            if (isMaior || recordeSalvo.length <= 3) {
 
                 let lRecorde = {
                     nome: nomeRecorde,
                     pontos: recorde
                 }
 
-                recordeSalvo.push(lRecorde);
+                recordeSalvo.unshift(lRecorde);
                 localStorage.setItem("recorde", JSON.stringify(recordeSalvo))
+                recordeSalvo =[]
             } else {
                 nome.style.display = 'none';
             }
         } else {
-            console.log('else')
+
             localRecorde = [{
                 nome: nomeRecorde,
                 pontos: recorde
@@ -134,62 +169,64 @@ function scoreFinal() {
 
 }
 
-function loop() {
-    aguardaIncio();
-    scoreFinal();
-    setInterval(() => {
-        const pipePosition = pipe.offsetLeft;
-        const marioPosition = window.getComputedStyle(mario).bottom.replace('px', '');
 
-        if (pipePosition <= 120 && pipePosition > 0 && marioPosition < 80) {
-            pipe.style.animation = 'none';
-            pipe.style.left = `${pipePosition}px`;
+// Botão de confirmar o nome do game over
+btn.addEventListener("click", function (e) {
+    e.preventDefault();
+    var nome = document.getElementById('nome');
+    nome = nome.value
+    salvar(nome);
+    recordeSalvo = [];
+    // Recarregar a pagina quando concluir
+    // location.reload();
+});
 
-            mario.style.animation = 'none';
-            mario.style.bottom = `${marioPosition}px`;
-
-            mario.src = './imagens/game-over.png';
-            mario.style.width = '75px'
-            mario.style.marginLeft = '50px'
-
-            over.style.display = 'block'
-            gameover = true;
-            return
-        }
-    }, 10)
-}
-
+// Botão de iniciar o jogo
 go.addEventListener('click', function () {
     start.style.display = "none";
     inicio.style.display = "block";
     loop();
 })
 
+// Botão de exibir recordes
 rec.addEventListener('click', function () {
     start.style.display = "none";
     classRecordes.style.display = "block";
     div_voltar.style.display = 'block';
 
-    classRecordes.innerHTML = `
-    <table border="0">
-        <tr>
-            <th>Jogador</th>
-            <th>Pontos</th>
-        </tr>
-        <tr>
-            <td>${ordenaRecorde.nome}</td>
-            <td>${ordenaRecorde.pontos}</td>
-        </tr>
-         
-        </table>
-    `
+    rank();
+  
+    // tabela.appendChild(corpo);
+    let tbody = document.querySelector('.tbody')
+    tbody.innerText ="";
+    
+    for (const i in recordeSalvo) {
+        let tr = tbody.insertRow();
+        let td_jogador = tr.insertCell();
+        let td_pontos = tr.insertCell();
+
+        td_jogador.innerHTML = recordeSalvo[i].nome
+        td_pontos.innerHTML = recordeSalvo[i].pontos
+    }
+        
 })
 
+// Botão de voltar da tela de recordes
 voltar.addEventListener('click', function () {
     div_voltar.style.display = 'none'
     classRecordes.style.display = "none";
     start.style.display = "block";
 })
 
+// Função do pulo
+const jump = () => {
+    mario.classList.add('jump')
+
+    setTimeout(() => {
+        mario.classList.remove('jump')
+    }, 500);
+}
+
+// Chamada do evento do pulo
 document.addEventListener('keydown', jump)
 document.addEventListener("touchstart", jump);

@@ -9,7 +9,7 @@
     position: relative;
     width: 100%;
     height: 100%;
-    min-height: 360px;
+    min-height: 340px;
     margin: 0 auto;
     border-bottom: 15px solid rgb(24, 206, 78);
     overflow: hidden;
@@ -104,27 +104,31 @@
     font-size: x-large;
     width: 100%;
     height: 100%;
-    min-height: 100px ;
+    min-height: 100px;
 }
 
-tr:nth-child(even) {background-color: #f2f2f2;}
+tr:nth-child(even) {background-color: #f2f2f2a6;}
 
 th, td {
     padding: 15px;
     text-align: left;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid rgb(221, 221, 221);
 }
 
 th {
     height: 50px;
-    background-color: #04aa1a;
-    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    background-color: #0491aa;
+    color: rgba(255, 255, 255, 0.966);
 }
 
 td {
     /* text-align: center; */
-    background-color: #f2f2f2;
+    background-color: #f2f2f248;
     height: 50px;
+    font-size: 1.5rem;
+    font-weight: bold;
     vertical-align: bottom;
 }
 
